@@ -56,10 +56,9 @@ feat.methods = list(all = extractFDAFourier(), all = extractFDAWavelets(), all =
 lrn = makeLearner("regr.ranger", importance = "impurity")
 wrapped.lrn = makeExtractFDAFeatsWrapper(lrn,  feat.methods = feat.methods)
 
-mod = train(wrapped.lrn, task)
-getFeatureImportance(mod)
-
 cv = makeResampleDesc("CV", iters = 23)
 
-res = resample(wrapped.lrn, task, cv10, mae)
-resample("regr.featureless", task, cv, mae)
+res = benchmark(list("regr.featureless", wrapped.lrn), task, cv, mae)
+
+mod = train(wrapped.lrn, task)
+getFeatureImportance(mod)
